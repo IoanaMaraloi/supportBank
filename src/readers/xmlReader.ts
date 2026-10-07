@@ -3,16 +3,8 @@ import { XMLParser } from "fast-xml-parser";
 import { readFileSync } from "node:fs";
 import { validateTransaction } from "../validation/transactionValidator.js";
 import log4js from "log4js";
+import type {XmlTransaction} from "../types/xmlTransaction.js";
 
-interface XmlTransaction {
-    Description: string;
-    Value: number;
-    Parties: {
-        From: string;
-        To: string;
-    };
-    "@_Date": string;
-}
 
 function convertExcelDate(dateNumber: number): Date {
     const millisecondsInOneDay = 24 * 60 * 60 * 1000;

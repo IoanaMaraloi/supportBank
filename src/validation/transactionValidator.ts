@@ -1,12 +1,7 @@
 import type log4js from "log4js";
+import type {ValidTransactionData} from "../types/transactionData.js";
 
-export interface ValidTransactionData {
-    from: string;
-    to: string;
-    amount: number;
-    narrative: string;
-    date: Date;
-}
+
 
 export function validateTransaction(
     from: string | undefined,

@@ -2,13 +2,7 @@ import { Bank } from "../bank.js";
 import { readFileSync } from "node:fs";
 import { validateTransaction } from "../validation/transactionValidator.js";
 import log4js from "log4js";
-interface JsonEntry {
-    Date: string;
-    FromAccount: string;
-    ToAccount: string;
-    Narrative: string;
-    Amount: number;
-}
+import type {JsonTransaction} from "../types/jsonTransaction.js";
 export function readJsonFile(
     fileName: string,
     bank: Bank,
@@ -21,9 +15,9 @@ export function readJsonFile(
         logger.error("Could not read file", fileName);
         return;
     }
-    let entries: JsonEntry[];
+    let entries: JsonTransaction[];
     try {
-        entries = JSON.parse(data) as JsonEntry[];
+        entries = JSON.parse(data) as JsonTransaction[];
     } catch (error) {
         logger.error("Could not parse JSON file", fileName);
         return;

@@ -1,9 +1,9 @@
 import { Person } from "./models/Person.js";
 import { Transaction } from "./models/Transaction.js";
-import type { ValidTransactionData } from "./validation/transactionValidator.js";
 import { basename, join } from "node:path";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { format } from "date-fns";
+import type {ValidTransactionData} from "./types/transactionData.js";
 
 export class Bank {
     people = new Map<string, Person>();
