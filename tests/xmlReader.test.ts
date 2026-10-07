@@ -28,8 +28,8 @@ describe("readXmlFile", () => {
         const bank = new Bank();
         readXmlFile(testFile, bank, logger);
 
-        expect(bank.people.get("Alice")?.amount).toBe(-10);
-        expect(bank.people.get("Bob")?.amount).toBe(10);
+        expect(bank.people.get("alice")?.amount).toBe(-10);
+        expect(bank.people.get("bob")?.amount).toBe(10);
     });
 
     it("logs an error when the file does not exist", () => {

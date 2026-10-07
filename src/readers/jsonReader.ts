@@ -29,17 +29,12 @@ export function readJsonFile(
         return;
     }
     for (const entry of entries) {
-        const to = entry.ToAccount;
-        const from = entry.FromAccount;
-        const amount = entry.Amount;
-        const date = new Date(entry.Date);
-        const narrative = entry.Narrative;
         const transaction = validateTransaction(
-            from,
-            to,
-            amount,
-            narrative,
-            date,
+            entry.FromAccount,
+            entry.ToAccount,
+            entry.Amount,
+            entry.Narrative,
+            new Date(entry.Date),
             logger,
             entry
         );
@@ -48,12 +43,7 @@ export function readJsonFile(
             continue;
         }
 
-        bank.processTransaction(
-            transaction.from,
-            transaction.to,
-            transaction.amount,
-            transaction.narrative,
-            transaction.date
-        );
+        bank.processTransaction(transaction);
     }
+    console.log(`File ${fileName} successfully read!`);
 }

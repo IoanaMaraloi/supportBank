@@ -34,22 +34,18 @@ export function readXmlFile(
         logger.error("Could not read file", fileName);
         return;
     }
-    const xml = parser.parse(data) as { TransactionList: { SupportTransaction: XmlTransaction[] } };
+    const xml = parser.parse(data) as {
+        TransactionList: { SupportTransaction: XmlTransaction[] };
+    };
     const rawEntries = xml.TransactionList.SupportTransaction;
     const entries = Array.isArray(rawEntries) ? rawEntries : [rawEntries];
     for (const entry of entries) {
-        const from = entry.Parties.From;
-        const to = entry.Parties.To;
-        const amount = Number(entry.Value);
-        const narrative = entry.Description;
-        const dateNumber = Number(entry["@_Date"]);
-        const date = convertExcelDate(dateNumber);
         const transaction = validateTransaction(
-            from,
-            to,
-            amount,
-            narrative,
-            date,
+            entry.Parties.From,
+            entry.Parties.To,
+            Number(entry.Value),
+            entry.Description,
+            convertExcelDate(Number(entry["@_Date"])),
             logger,
             entry
         );
@@ -58,12 +54,7 @@ export function readXmlFile(
             continue;
         }
 
-        bank.processTransaction(
-            transaction.from,
-            transaction.to,
-            transaction.amount,
-            transaction.narrative,
-            transaction.date
-        );
+        bank.processTransaction(transaction);
     }
+    console.log(`File ${fileName} successfully read!`);
 }

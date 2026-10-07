@@ -23,17 +23,12 @@ export function readCsvFile(
         trim: true,
     }) as Record<string, string>[];
     for (const row of rows) {
-        const to = row["To"];
-        const from = row["From"];
-        const amount = Number(row["Amount"]);
-        const narrative = row["Narrative"];
-        const date = parseDate(row["Date"]!, "dd/MM/yyyy", new Date());
         const transaction = validateTransaction(
-            from,
-            to,
-            amount,
-            narrative,
-            date,
+            row["From"],
+            row["To"],
+            Number(row["Amount"]),
+            row["Narrative"],
+            parseDate(row["Date"]!, "dd/MM/yyyy", new Date()),
             logger,
             row
         );
@@ -42,12 +37,7 @@ export function readCsvFile(
             continue;
         }
 
-        bank.processTransaction(
-            transaction.from,
-            transaction.to,
-            transaction.amount,
-            transaction.narrative,
-            transaction.date
-        );
+        bank.processTransaction(transaction);
     }
+    console.log(`File ${fileName} successfully read!`);
 }
