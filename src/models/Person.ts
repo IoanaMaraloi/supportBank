@@ -13,4 +13,7 @@ export class Person {
         this.transactions.push(transaction);
         this.amount += transaction.amount;
     }
+    toString(): string {
+        return `${this.name}: ${this.amount.toFixed(2)}`;
+    }
 }
