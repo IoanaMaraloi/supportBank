@@ -1,0 +1,37 @@
+{
+  "name": "supportbank",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "format": "prettier --write \"src/**/*.ts\" \"*.ts\"",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IoanaMaraloi/supportBank.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IoanaMaraloi/supportBank/issues"
+  },
+  "homepage": "https://github.com/IoanaMaraloi/supportBank#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/readline-sync": "^1.4.8",
+    "@vitest/coverage-v8": "^5.0.3",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "csv-parse": "^7.0.3",
+    "date-fns": "^4.4.0",
+    "fast-xml-parser": "^5.11.2",
+    "log4js": "^6.9.1",
+    "readline-sync": "^1.4.10"
+  }
+}
