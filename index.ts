@@ -23,29 +23,38 @@ function readFile(file: string): void {
     }
 }
 const bank = new Bank();
-const files = [
-    "src/transactions/Transactions2014.csv",
-    "src/transactions/DodgyTransactions2015.csv",
-    "src/transactions/Transactions2013.json",
-    "src/transactions/Transactions2012.xml",
-];
 
-files.forEach((file) => {
-    readFile(file);
-});
 while (true) {
     const option = readlineSync
-        .question("Choose List All or List [Account] or Import [File]: ")
+        .question(
+            "Choose an option:\n" +
+                "  List All\n" +
+                "  List Account\n" +
+                "  Import File\n" +
+                "  Export File\n" +
+                "  Quit\n" +
+                "> "
+        )
         .trim();
-    if (option === "List All") {
-        bank.listAll();
-    } else if (option.startsWith("List [") && option.endsWith("]")) {
-        bank.listAccount(option.slice(6, -1).trim());
-    } else if (option.startsWith("Import [") && option.endsWith("]")) {
-        readFile(option.slice(8, -1).trim());
-    } else if (option === "Quit") {
+    if (option.toLowerCase() === "quit") {
         break;
-    } else {
-        console.log("Invalid option");
     }
+    switch (true) {
+        case option.toLowerCase() === "list all":
+            bank.listAll();
+            break;
+        case option.toLowerCase().startsWith("list "):
+            bank.listAccount(option.slice(5).toLowerCase().trim());
+            break;
+        case option.toLowerCase().startsWith("import "):
+            readFile(option.slice(7).trim());
+            break;
+        case option.toLowerCase().startsWith("export "):
+            bank.exportTransactions(option.slice(7).trim());
+            break;
+        default:
+            console.log("Invalid option");
+            break;
+    }
+
 }
