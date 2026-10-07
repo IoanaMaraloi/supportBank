@@ -1,41 +1,49 @@
 import { Person } from "./models/Person.js";
 import { Transaction } from "./models/Transaction.js";
+import type { ValidTransactionData } from "./validation/transactionValidator.js";
+import { basename, join } from "node:path";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { format } from "date-fns";
 
 export class Bank {
     people = new Map<string, Person>();
 
-    processTransaction(
-        from: string,
-        to: string,
-        amount: number,
-        narrative: string,
-        date: Date
-    ): void {
-        let sender = this.people.get(from);
+    processTransaction(transaction: ValidTransactionData): void {
+        let sender = this.people.get(transaction.from);
 
         if (!sender) {
-            sender = new Person(from);
-            this.people.set(from, sender);
+            sender = new Person(transaction.from);
+            this.people.set(transaction.from, sender);
         }
 
-        let recipient = this.people.get(to);
+        let recipient = this.people.get(transaction.to);
 
         if (!recipient) {
-            recipient = new Person(to);
-            this.people.set(to, recipient);
+            recipient = new Person(transaction.to);
+            this.people.set(transaction.to, recipient);
         }
 
         sender.addTransaction(
-            new Transaction(-amount, recipient, date, narrative)
+            new Transaction(
+                -transaction.amount,
+                recipient,
+                transaction.date,
+                transaction.narrative
+            )
         );
 
         recipient.addTransaction(
-            new Transaction(amount, sender, date, narrative)
+            new Transaction(
+                transaction.amount,
+                sender,
+                transaction.date,
+                transaction.narrative
+            )
         );
     }
     listAll(): void {
         this.people.forEach((person) => {
-            console.log(person.name, person.amount);
+            console.log(person.toString());
         });
     }
     listAccount(accountName: string): void {
@@ -43,16 +51,55 @@ export class Bank {
         if (!account) {
             console.log("Account not found");
         } else {
-            console.log(account.name, account.amount);
+            console.log(account.toString());
             account.transactions.forEach((transaction) => {
-                console.log(
-                    transaction.date.toDateString(),
-                    ": ",
-                    transaction.otherPerson.name,
-                    transaction.amount,
-                    transaction.narrative
-                );
+                console.log(transaction.toString());
             });
+        }
+    }
+    exportTransactions(file: string): void {
+        const exportDir = "exports";
+        const fileName = basename(file);
+        const outputPath = join(exportDir, fileName);
+
+        mkdirSync(exportDir, { recursive: true });
+
+        if (existsSync(outputPath)) {
+            console.log(`File ${outputPath} already exists.`);
+            return;
+        }
+        let transactionList: ValidTransactionData[] = [];
+        this.people.forEach((person) => {
+            person.transactions.forEach((transaction) => {
+                if (transaction.amount > 0) {
+                    transactionList.push({
+                        from: transaction.otherPerson.name,
+                        to: person.name,
+                        amount: transaction.amount,
+                        narrative: transaction.narrative,
+                        date: transaction.date,
+                    });
+                }
+            });
+        });
+        if (file.endsWith(".json")) {
+            const jsonOutput = JSON.stringify(transactionList);
+            writeFileSync(outputPath, jsonOutput);
+            console.log(
+                `Exported ${transactionList.length} transactions to ${outputPath}`
+            );
+        } else if (file.endsWith(".csv")) {
+            let csvOutput = "Date,From,To,Narrative,Amount";
+            transactionList.forEach((transaction) => {
+                const date = format(transaction.date, "dd/MM/yyyy");
+                csvOutput += `\n${date},${transaction.from},${transaction.to},${transaction.narrative},${transaction.amount}`;
+            });
+            writeFileSync(outputPath, csvOutput);
+            console.log(
+                `Exported ${transactionList.length} transactions to ${outputPath}`
+            );
+        } else {
+            console.log("Unsupported file format");
         }
     }
 }

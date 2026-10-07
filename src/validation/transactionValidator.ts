@@ -43,8 +43,8 @@ export function validateTransaction(
     }
 
     return {
-        from: from,
-        to: to,
+        from: from.toLowerCase(),
+        to: to.toLowerCase(),
         amount: amount,
         narrative: narrative,
         date: date,

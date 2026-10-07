@@ -17,8 +17,8 @@ describe("validateTransaction", () => {
         );
 
         expect(result).toEqual({
-            from: "Alice",
-            to: "Bob",
+            from: "alice",
+            to: "bob",
             amount: 10,
             narrative: "Lunch",
             date: new Date("2020-01-01"),
@@ -28,7 +28,7 @@ describe("validateTransaction", () => {
     test("returns undefined when from is empty", () => {
         const result = validateTransaction(
             "",
-            "Bob",
+            "bob",
             10,
             "Lunch",
             new Date("2020-01-01"),
